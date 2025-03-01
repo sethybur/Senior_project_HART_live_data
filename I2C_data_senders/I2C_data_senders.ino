@@ -25,12 +25,12 @@ void setup() {
 
 void loop() {
   // put your main code here, to run repeatedly:
-  delay(1000);
+  delay(100);
   //simulating sending data
   String num = String(random(10), DEC);
   String mesage = "sensor id: " + String(I2C_myAddress) + ":\t" + num;
   // I2C_send(mesage.c_str());
-  I2C_send("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbcccccccccccccccccccccccccccccccdddddddddddddddddddddddddddddddeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeefffffffffffffffffffffffffffffffggggggggggggggggggggggggggggggghhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiijjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkklllllllllllllllllllllllllllllllmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnooooooooooooooooooooooooooooooopppppppppppppppppppppppppppppppqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrssssssssssssssssssssssssssssssstttttttttttttttttttttttttttttttuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz11111111111111111111111111111112222222222222222222222222222222333333333333333333333333333333344444444444444444444444444444445555555555555555555555555555555666666666666666666666666666666677777777777777777777777777777778");
+  I2C_send("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbcccccccccccccccccccccccccccccccdddddddddddddddddddddddddddddddeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeefffffffffffffffffffffffffffffffggggggggggggggggggggggggggggggghhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiijjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkklllllllllllllllllllllllllllllllmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnooooooooooooooooooooooooooooooopppppppppppppppppppppppppppppppqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrssssssssssssssssssssssssssssssstttttttttttttttttttttttttttttttuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz1111111111111111111111111111111222222222222222222222222222222233333333333333333333333333333334444444444444444444444444444444555555555555555555555555555555566666666666666666666666666666667777777777777777777777777777777");
 
   //handle I2C comands
   if(I2C_recievedFlag) I2C_recieve();
@@ -43,7 +43,7 @@ void loop() {
 void I2C_send(char message[]) {
   int index = 0;
   int bytes_sent = 0;
-  while(message[index] != 0) {
+  do {
     Wire.beginTransmission(I2C_controllerAddress); //reserves the bus for transmitting
 
     // sends my address so reader knows where this is coming from.
@@ -51,17 +51,18 @@ void I2C_send(char message[]) {
     bytes_sent++;
 
     // send the mesage in 32 byte chunks
-    while(message[index] != 0 && bytes_sent < 32) {
+    do {
       Wire.write(message[index]);
       
       index++;
       bytes_sent++;
-    }
+    } while(message[index-1] != 0 && bytes_sent < 32);
+
     Wire.endTransmission(); //unreserves the bus
-    delay(500);
+    delay(10);
     bytes_sent = 0;
-  }
-}
+  } while(message[index-1] != 0);
+} 
 
 /*  reads the I2C_buffer string 
     you can use this to signal what ever you want
