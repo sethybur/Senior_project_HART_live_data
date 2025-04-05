@@ -1,5 +1,7 @@
 ECEC 499 senior project with HART 
 Ground Station:
+There is still some weird stuff going on with the recceive. The messages are split up and sent separately slower than they are received. Kind of weird but it is receiving the messages correctly
+
   Ground Station Operation Instructions:
     1.	Plug the meshtastic device into the furthest USB port on the USB splitter. The USB splitter plugs into the power port in the middle of the device.
     2.	Plug in the raspberry pi’s power to the power port closest to the edge of the device. This will be plugged into a battery bank.
